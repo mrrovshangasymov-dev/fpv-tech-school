@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Optional tag such as v0.1.0; set it to publish a GitHub Release"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -48,3 +53,30 @@ jobs:
           path: dist/FPV-Tech-School-debug-${{ github.run_number }}.apk
           if-no-files-found: error
           retention-days: 30
+
+  publish-release:
+    name: Publish GitHub Release
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag != '' }}
+    needs: build-apk
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download built APK
+        uses: actions/download-artifact@v7
+        with:
+          name: FPV-Tech-School-APK-${{ github.run_number }}
+          path: dist
+
+      - name: Create release and attach APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          original="dist/FPV-Tech-School-debug-${GITHUB_RUN_NUMBER}.apk"
+          asset="dist/FPV-Tech-School-${RELEASE_TAG#v}.apk"
+          cp "$original" "$asset"
+          gh release create "$RELEASE_TAG" "$asset" \
+            --target "$GITHUB_SHA" \
+            --title "FPV Техшкола ${RELEASE_TAG}" \
+            --notes "Первая отладочная версия FPV Техшколы: вводный урок «Что такое FPV?», презентационные карточки и тест."
