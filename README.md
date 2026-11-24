@@ -14,4 +14,4 @@
 
 Есть каталог из десяти тем и первый интерактивный урок «Что такое FPV?»: короткое объяснение, презентационные карточки, схема прохождения сигнала и тест. Прогресс сохраняется на устройстве. Видеоролики подключаются как отдельные материалы после подготовки.
 
-Сборка рассчитана на GitHub Actions: GitHub-hosted runner, Temurin JDK 17, Gradle 9.6.0, Android Gradle Plugin 9.5.0 и Android API 37.
+Сборка рассчитана на GitHub Actions: GitHub-hosted runner, Temurin JDK 17, Gradle 9.6.0, Android Gradle Plugin 9.5.0 и Android API 36.
